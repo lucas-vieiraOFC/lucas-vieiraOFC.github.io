@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portfólio</title>
+<meta name="theme-color" content="#030705">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030705;--ink:#d9ffe8;--dim:#74a088;--ac:#3dff8b;
+--borda:color-mix(in srgb,var(--ac) 30%,transparent);--brilho:color-mix(in srgb,var(--ac) 55%,transparent);
+--d:"VT323",ui-monospace,monospace;--t:"JetBrains Mono",ui-monospace,Menlo,monospace;--pad:clamp(14px,3vw,40px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--t);font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+ul{list-style:none}
+::selection{background:var(--ac);color:#000}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+#gl,#chuva{position:fixed;inset:0;width:100%;height:100%}
+#gl{z-index:0}
+#chuva{z-index:1;opacity:.4;display:none;pointer-events:none}
+#chuva.on{display:block}
+#chuva.salva{z-index:8000;opacity:.92;background:var(--bg)}
+.crt{position:fixed;inset:0;z-index:9000;pointer-events:none;overflow:hidden;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.26) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%);animation:tremor 6s steps(1) infinite}
+.crt::after{content:"";position:absolute;left:0;right:0;top:0;height:18vh;background:linear-gradient(transparent,color-mix(in srgb,var(--ac) 8%,transparent),transparent);animation:varredura 7s linear infinite}
+@keyframes tremor{0%,100%{opacity:1}48%{opacity:.84}50%{opacity:1}73%{opacity:.92}74%{opacity:1}}
+@keyframes varredura{from{transform:translateY(-20vh)}to{transform:translateY(120vh)}}
+
+.painel{background:rgba(3,14,9,.66);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--borda);box-shadow:0 0 44px -22px var(--ac),inset 0 0 34px -24px var(--ac)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border:1px solid var(--borda);font-weight:500;transition:background .2s,color .2s,box-shadow .2s}
+.btn::before{content:"[ "}.btn::after{content:" ]"}
+.btn::before,.btn::after{white-space:pre;color:var(--ac);transition:color .2s}
+.btn.cheio,.btn:hover{background:var(--ac);color:#000;box-shadow:0 0 28px -6px var(--ac)}
+.btn.cheio::before,.btn.cheio::after,.btn:hover::before,.btn:hover::after{color:#000}
+.glitch{text-shadow:.018em 0 rgba(255,46,99,.75),-.018em 0 rgba(0,229,255,.75);animation:glitch 4.5s steps(1) infinite}
+@keyframes glitch{
+0%,90%,100%{transform:none;clip-path:none;text-shadow:.018em 0 rgba(255,46,99,.75),-.018em 0 rgba(0,229,255,.75)}
+91%{transform:translateX(-.04em) skewX(-10deg);text-shadow:.07em 0 #ff2e63,-.07em 0 #00e5ff}
+93%{transform:translateX(.05em);clip-path:inset(12% 0 48% 0)}
+95%{transform:translateX(-.03em) skewX(6deg);clip-path:inset(58% 0 8% 0);text-shadow:-.07em 0 #ff2e63,.07em 0 #00e5ff}
+97%{transform:none;clip-path:inset(0 0 70% 0)}}
+
+/* cursor */
+.cursor{display:none}
+.tem-cursor,.tem-cursor a,.tem-cursor button,.tem-cursor input{cursor:none}
+.tem-cursor .cursor{display:block;position:fixed;inset:0;z-index:9500;pointer-events:none}
+.cursor i,.cursor b{position:absolute;top:0;left:0;will-change:transform}
+.cursor i{width:5px;height:5px;margin:-2.5px;background:var(--ac);box-shadow:0 0 10px var(--ac)}
+.cursor b{width:30px;height:30px;margin:-15px;border:1px solid var(--ac);transition:width .2s,height .2s,margin .2s,background .2s}
+.cursor.ativo b{width:46px;height:46px;margin:-23px;background:color-mix(in srgb,var(--ac) 14%,transparent)}
+
+/* boot */
+.boot{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:flex-end;transition:transform .32s cubic-bezier(.7,0,1,1)}
+.boot canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.3}
+.boot-in{position:relative;padding:var(--pad);width:100%}
+.boot pre{font:14px/1.7 var(--t);color:var(--dim);white-space:pre-wrap}
+#barra-ascii{color:var(--ac);margin-top:8px}
+.acesso{font-family:var(--d);font-weight:400;text-transform:uppercase;font-size:clamp(3rem,13vw,9rem);line-height:.9;color:var(--ac);margin-top:18px}
+.boot-acoes{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.boot [hidden]{display:none}
+.boot.desliga{background:var(--ink);transform:scaleY(.004)}
+.boot.desliga.fim{transform:scale(0,.004);transition-duration:.26s}
+.boot.desliga > *{visibility:hidden}
+.topo-dir{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dim);white-space:nowrap}
+.som{width:34px;height:34px;border:1px solid var(--borda);display:flex;align-items:center;justify-content:center;gap:3px}
+.som span{width:3px;height:5px;background:var(--ac)}
+.tocando .som{background:var(--ac)}
+.tocando .som span{background:#000;animation:barra .5s steps(4) infinite alternate}
+.tocando .som span:nth-child(2){animation-delay:-.25s}
+.tocando .som span:nth-child(3){animation-delay:-.4s}
+@keyframes barra{from{height:4px}to{height:16px}}
+.papel-parede{position:absolute;left:var(--pad);right:var(--pad);bottom:78px;pointer-events:none}
+.nomezao{font-family:var(--d);font-weight:400;text-transform:uppercase;font-size:min(14vw,24vh);line-height:.8;color:var(--ink)}
+.lin{display:block;width:max-content;max-width:100%;padding-top:.06em}
+.lin:nth-child(2){animation-delay:-1.7s}
+.ch{display:inline-block;pointer-events:auto;transition:color .2s}
+.papel{margin-top:10px;color:var(--ac);font-size:clamp(.9rem,2vw,1.2rem);min-height:1.7em}
+.papel .pr{color:var(--dim)}
+.bloco{display:inline-block;width:.6em;height:1.1em;background:var(--ac);vertical-align:-.18em;margin-left:4px;animation:pisca 1s steps(1) infinite}
+@keyframes pisca{50%{opacity:0}}
+.app-terminal .corpo{display:flex;flex-direction:column;overflow:hidden}
+.saida{flex:1;overflow-y:auto;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin;scrollbar-color:var(--borda) transparent}
+.saida .cmd{color:var(--ac)}
+.saida a{color:var(--ac);text-decoration:underline}
+.form-cmd{display:flex;gap:8px;align-items:center;padding:8px 14px;border-top:1px solid var(--borda)}
+.form-cmd label{color:var(--ac)}
+.form-cmd input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--ink);font:16px var(--t);caret-color:var(--ac)}
+.chips{display:flex;gap:8px;padding:0 14px 12px;overflow-x:auto;scrollbar-width:none}
+.chips button{padding:0 12px;min-height:38px;border:1px solid var(--borda);font-size:13px;color:var(--ac);white-space:nowrap}
+.chips button:hover{background:var(--ac);color:#000}
+.sobre{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:18px}
+.sobre .foto{width:150px;aspect-ratio:3/4;background-size:cover;background-position:center;background-color:var(--ac);background-blend-mode:luminosity;border:1px solid var(--borda)}
+.ficha{color:var(--ac);font:14px/1.7 var(--t);min-height:6.8em;white-space:pre-wrap}
+.manifesto{font-size:clamp(1.05rem,2.2vw,1.3rem);font-weight:500;line-height:1.4;letter-spacing:-.02em;margin:14px 0 16px}
+.manifesto em{font-style:normal;color:var(--ac);text-shadow:0 0 16px var(--brilho)}
+.numeros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.numeros li{border:1px solid var(--borda);padding:8px 10px;font-size:12px;color:var(--dim);line-height:1.4}
+.num{display:block;font:400 2.5rem/1 var(--d);color:var(--ac);text-shadow:0 0 18px var(--brilho)}
+.servs{margin-top:14px}
+.servs li{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid var(--borda);color:var(--dim)}
+.servs b{font:400 1.5rem/1 var(--d);color:var(--ac)}
+.exp{display:grid;grid-template-columns:190px 1fr;height:100%}
+.exp-lista{border-right:1px solid var(--borda);overflow:auto}
+.exp-lista button{display:block;width:100%;text-align:left;padding:12px 14px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp-lista button:hover{color:var(--ac)}
+.exp-lista button.on{background:var(--ac);color:#000}
+.exp-ver{padding:14px;overflow:auto;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.capa{width:100%;height:190px;flex:none;position:relative;border:1px solid var(--borda);background-size:cover;background-position:center}
+.capa.foto{background-color:var(--ac);background-blend-mode:luminosity}
+.capa:hover.foto{background-blend-mode:normal}
+.tela{position:absolute;inset:0;width:100%;height:100%}
+.capa small{position:absolute;left:10px;top:8px;font-size:12px;color:var(--dim)}
+.exp-ver h3{font:400 2rem/1 var(--d);color:var(--ac);text-transform:uppercase}
+.exp-ver p{color:var(--dim)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--ac)}
+.tags li::before{content:"["}.tags li::after{content:"]"}
+.htop{padding:14px;font:13px/1.6 var(--t);white-space:pre}
+.htop b{color:var(--ac);font-weight:400}
+.htop i{color:var(--dim);font-style:normal}
+.app-contato .corpo{padding:18px}
+.log{color:var(--dim);font:13px/1.8 var(--t);white-space:pre-wrap;min-height:7.4em}
+.canal[hidden]{display:none}
+.email{display:inline-block;margin:6px 0 16px;font-size:clamp(1.05rem,3vw,1.6rem);font-weight:500;color:var(--ac);border-bottom:1px dashed var(--ac);overflow-wrap:anywhere;text-shadow:0 0 18px var(--brilho)}
+.email::before{content:"ssh ";color:var(--dim);text-shadow:none}
+.acoes{display:flex;flex-wrap:wrap;gap:8px}
+.vis{width:100%;height:150px;display:block;border-bottom:1px solid var(--borda)}
+.faixa-info{display:flex;gap:14px;align-items:center;padding:14px}
+.faixa-info b{display:block;color:var(--ac)}
+.faixa-info span{font-size:12px;color:var(--dim)}
+.snake{width:100%;height:auto;display:block;touch-action:none;image-rendering:pixelated}
+.placar{padding:10px 14px;font-size:13px;color:var(--dim)}
+.placar b{color:var(--ac)}
+.arqs{padding:14px}
+.arqs li{padding:8px 0;border-bottom:1px solid var(--borda)}
+.arqs + p{padding:0 14px 14px;color:var(--dim);font-size:13px}
+.aviso{position:fixed;left:50%;bottom:70px;transform:translate(-50%,140px);padding:10px 18px;font-weight:500;color:var(--ac);z-index:8500;max-width:calc(100% - 24px);text-align:center;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.aviso.visivel{transform:translate(-50%,0)}
+.pane .janelas,.pane .papel-parede{animation:pane .2s steps(1) infinite}
+@keyframes pane{0%{transform:none;filter:none}25%{transform:translate(-6px,2px) skewX(2deg);filter:hue-rotate(90deg)}50%{transform:translate(5px,-3px);filter:invert(1)}75%{transform:translate(-3px,1px) skewX(-3deg);filter:hue-rotate(200deg)}}
+
+/* ---------- página em rolagem ---------- */
+html{height:auto;overflow-x:hidden;overflow-y:auto;scroll-behavior:smooth}
+body{height:auto;overflow:visible}
+body:not(.ligado){height:100%;overflow:hidden}
+main{position:relative;z-index:2;visibility:hidden}
+.ligado main{visibility:visible}
+.off main,.off #gl,.off .topo{animation:crtoff .6s forwards}
+@keyframes crtoff{40%{transform:scaleY(.004);filter:brightness(4)}100%{transform:scale(0,.004);filter:brightness(4)}}
+#desligado{position:fixed;inset:0;z-index:9800;display:grid;place-items:center;background:#000}
+#desligado[hidden]{display:none}
+
+.topo{position:fixed;top:8px;left:8px;right:8px;height:46px;z-index:5000;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px;visibility:hidden}
+.ligado .topo{visibility:visible}
+.marca{font-family:var(--d);font-size:22px;text-transform:uppercase;color:var(--ac);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+.nav{display:flex;gap:2px;font-size:13px}
+.nav a{padding:8px 10px;color:var(--dim);white-space:nowrap}
+.nav a:hover,.nav a.on{color:var(--ac)}
+.nav a.on::before{content:"> "}
+.build{color:var(--ac);font-size:12px;white-space:nowrap}
+
+/* seções: um vazio onde as partículas escrevem o título, depois o conteúdo */
+.sec{padding:0 var(--pad) 12vh;display:flex;flex-direction:column;gap:16px}
+.sec.dir{align-items:flex-end}
+.sec.esq{align-items:flex-start}
+.sec:last-child{padding-bottom:30vh}
+.caixa{width:100%;max-width:680px}
+.larga{width:100%;max-width:1040px}
+.tit{font:400 clamp(3.2rem,10vw,6.5rem)/.82 var(--d);text-transform:uppercase;color:var(--ink);padding-top:90px}
+.espaco{display:none}
+.tem-gl .espaco{display:block;width:100%;height:74vh;height:74svh}
+.tem-gl .tit,.tem-gl .nomezao{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;padding:0}
+.sub{color:var(--dim);font-size:13px}
+.sub b{color:var(--ac);font-weight:400}
+
+#inicio{min-height:100vh;min-height:100svh;justify-content:flex-end;padding-top:84px;padding-bottom:max(6vh,36px)}
+.papel-parede{position:static;pointer-events:auto;width:100%}
+.role{margin-top:10px;color:var(--dim);font-size:13px;animation:pisca 1.6s steps(1) infinite}
+
+/* compilação ao vivo: código cru embaixo da linha, site pronto em cima */
+.comp{position:relative}
+.fonte{position:absolute;inset:0;overflow:hidden;padding:12px 14px;font:11px/1.55 var(--t);color:var(--dim);white-space:pre-wrap;word-break:break-all;pointer-events:none;opacity:.85}
+.fonte b{color:var(--ac);font-weight:400}
+.fonte i{font-style:normal;opacity:.6}
+.feixe{position:absolute;left:-1px;right:-1px;top:0;height:2px;background:var(--ac);box-shadow:0 0 22px 3px var(--ac);pointer-events:none;opacity:0;will-change:transform}
+.feixe::after{content:attr(data-t);position:absolute;right:8px;bottom:6px;font-size:11px;line-height:1.5;color:#000;background:var(--ac);padding:0 8px;white-space:nowrap}
+
+.projs{display:grid;gap:18px}
+.proj>.real{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+.proj .capa{height:auto;min-height:210px;border:0;border-right:1px solid var(--borda)}
+.proj:nth-child(even) .capa{order:2;border-right:0;border-left:1px solid var(--borda)}
+.proj-info{padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.proj-info h3{font:400 2.2rem/1 var(--d);color:var(--ac);text-transform:uppercase}
+.proj-info p{color:var(--dim)}
+
+.app-terminal .corpo{height:min(430px,62vh)}
+.contato-corpo>.real{padding:18px}
+.player{margin-top:2px}
+.rodape{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;color:var(--dim);font-size:13px;margin-top:8px}
+.rodape div{display:flex;flex-wrap:wrap;gap:8px}
+.pane main{animation:pane .2s steps(1) infinite}
+
+@media(max-width:820px){
+  .nav{display:none}
+  .proj>.real{grid-template-columns:minmax(0,1fr)}
+  .proj .capa,.proj:nth-child(even) .capa{order:0;min-height:170px;border:0;border-bottom:1px solid var(--borda)}
+  .sobre{grid-template-columns:minmax(0,1fr)}
+  .sobre .foto{width:120px}
+  .servs li{grid-template-columns:minmax(0,1fr);gap:2px}
+  .htop{font-size:12px;overflow-x:auto}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01s!important;animation-iteration-count:1!important;transition:none!important}}
+.boot{overflow:hidden}
+.boot pre{font-size:clamp(10.5px,2.85vw,14px);line-height:1.6;overflow-wrap:anywhere}
+.boot pre b{color:var(--ac);font-weight:400}
+.boot pre i{font-style:normal;opacity:.6}
+.pular{position:absolute;top:10px;right:10px;z-index:1;font-size:12px;color:var(--dim);background:var(--bg);border:1px solid var(--borda);padding:4px 10px}
+/* botões crescem no hover; cursor fica acima da tela de desligado */
+.btn,.chips button,.som{transition:background .2s,color .2s,box-shadow .2s,transform .18s cubic-bezier(.2,.9,.3,1.4)}
+.btn:hover,.chips button:hover,.som:hover{transform:scale(1.07)}
+.btn:active,.chips button:active,.som:active{transform:scale(.97)}
+.tem-cursor .cursor{z-index:9900}
+.tecla{margin-top:16px;color:var(--ink);font-size:clamp(13px,3.6vw,16px)}
+
+/* seletor de idioma */
+.idioma{position:relative}
+.lang-btn{height:34px;padding:0 10px;border:1px solid var(--borda);font-size:12px;color:var(--ac);transition:background .2s,color .2s}
+.lang-btn:hover,.lang-btn[aria-expanded="true"]{background:var(--ac);color:#000}
+.lang-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:150px;display:flex;flex-direction:column;background:rgba(3,14,9,.95)}
+.lang-menu[hidden]{display:none}
+.lang-menu button{text-align:left;padding:10px 14px;font-size:13px;color:var(--dim);white-space:nowrap}
+.lang-menu button.on{color:var(--ac)}
+.lang-menu button.on::before{content:"> "}
+.lang-menu button:hover{background:var(--ac);color:#000}
+
+</style>
+</head>
+<body>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<canvas id="chuva" aria-hidden="true"></canvas>
+<div class="crt" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><i></i><b></b></div>
+
+<div class="boot" id="boot">
+  <canvas id="chuva-boot" aria-hidden="true"></canvas>
+  <p class="pular" data-en="tap to skip">toque para pular</p>
+  <div class="boot-in">
+    <pre id="log"></pre>
+    <pre id="barra-ascii"></pre>
+    <h2 class="acesso glitch" id="acesso" data-en="Access granted" hidden>Acesso concedido</h2>
+    <p class="tecla" id="tecla" hidden>pressione qualquer tecla para iniciar<i class="bloco"></i></p>
+  </div>
+</div>
+
+
+<header class="painel topo">
+  <a class="marca" href="#inicio">◆ <span data-nome></span></a>
+  <nav class="nav" id="nav" aria-label="Seções">
+    <a href="#sobre" data-en="about">sobre</a>
+    <a href="#projetos" data-en="projects">projetos</a>
+    <a href="#stack">stack</a>
+    <a href="#terminal">terminal</a>
+    <a href="#contato" data-en="contact">contato</a>
+  </nav>
+  <div class="topo-dir">
+    <div class="idioma" id="idioma">
+      <button class="lang-btn" id="lang-btn" aria-haspopup="true" aria-expanded="false">language</button>
+      <div class="painel lang-menu" id="lang-menu" hidden>
+        <button data-lang="pt">português</button>
+        <button data-lang="en">english</button>
+      </div>
+    </div>
+    <span class="build" id="build">build 0%</span>
+    <span id="hora">--:--:--</span>
+    <button class="som" id="som" data-som aria-label="Ligar música"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="os">
+  <section class="sec" id="inicio" data-titulo="">
+    <div class="papel-parede">
+      <h1 class="nomezao" id="nome"></h1>
+      <p class="papel"><span class="pr">&gt; whoami:</span> <span id="papel"></span><i class="bloco"></i></p>
+      <p class="role" data-en="scroll to compile ▼">role para compilar ▼</p>
+    </div>
+  </section>
+
+  <section class="sec dir" id="sobre" data-titulo="Sobre" data-titulo-en="About">
+    <h2 class="tit glitch" data-en="About">Sobre</h2>
+    <div class="espaco"></div>
+    <div class="painel caixa" id="sobre-corpo"></div>
+  </section>
+
+  <section class="sec esq" id="projetos" data-titulo="Projetos" data-titulo-en="Projects">
+    <h2 class="tit glitch" data-en="Projects">Projetos</h2>
+    <div class="espaco"></div>
+    <div class="projs larga" id="projs"></div>
+  </section>
+
+  <section class="sec dir" id="stack" data-titulo="Stack">
+    <h2 class="tit glitch">Stack</h2>
+    <div class="espaco"></div>
+    <div class="painel caixa" id="stack-corpo"><pre class="htop" id="htop"></pre></div>
+  </section>
+
+  <section class="sec esq" id="terminal" data-titulo="Terminal">
+    <h2 class="tit glitch">Terminal</h2>
+    <div class="espaco"></div>
+    <p class="sub">digite <b>ajuda</b>. Existem comandos secretos.</p>
+    <div class="painel caixa app-terminal" id="term-caixa"><div class="corpo" id="term-corpo"></div></div>
+  </section>
+
+  <section class="sec dir" id="contato" data-titulo="Contato" data-titulo-en="Contact">
+    <h2 class="tit glitch" data-en="Contact">Contato</h2>
+    <div class="espaco"></div>
+    <div class="painel caixa contato-corpo" id="contato-caixa">
+      <pre class="log" id="contato-log"></pre>
+      <div class="canal" id="canal" hidden>
+        <a class="email" id="email"></a>
+        <div class="acoes" id="contato-acoes"></div>
+      </div>
+    </div>
+    <div class="painel caixa player" id="player">
+      <canvas class="vis" id="vis"></canvas>
+      <div class="faixa-info"><button class="btn cheio" data-som data-rotulo data-en="play">tocar</button><div><b id="faixa-nome">musica.wav</b></div></div>
+    </div>
+    <footer class="rodape caixa">
+      <span id="direitos"></span>
+      <div><button class="btn" data-cmd="matrix">matrix</button><button class="btn" data-cmd="desligar" data-cmd-en="shutdown" data-en="shut down">desligar</button></div>
+    </footer>
+  </section>
+</main>
+
+<div id="desligado" hidden><button class="btn cheio" id="ligar" data-en="power back on">ligar novamente</button></div>
+<div class="painel aviso" id="aviso" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============ EDITE AQUI ============ */
+const CONFIG = {
+  nome: "Lucas Vieira",
+  papeis: ["pesquisador de cibersegurança", "analista de malware", "informação quântica", "programador de sistemas em C"],
+  disponivel: "online, pesquisando criptografia quântica",
+  local: "Brasília, BR", fuso: "America/Sao_Paulo",
+  foto: "",
+  // palavras entre *asteriscos* ganham destaque
+  manifesto: "Eu quebro sistemas e construo os que não podem ser quebrados. De um lado, engenharia reversa de malware. Do outro, criptografia quântica, onde a segurança deixa de ser dificuldade computacional e vira física.",
+  numeros: [["4", "certificações IBM Quantum"], ["6", "repositórios públicos"], ["1", "pesquisa apresentada no GHC Summit 2026"]],
+  servicos: [
+    ["Malware", "Engenharia reversa: desmonto packers, rastreio rotinas de injeção e escrevo a detecção que pega a próxima amostra da mesma família."],
+    ["Quântica", "Distribuição quântica de chaves e ghost imaging aplicados à proteção de prontuários e imagens médicas."],
+    ["Sistemas", "C e C++ puros, sem engine nem dependências: uma linguagem própria e uma simulação de vida."]
+  ],
+  // nome e domínio de 0 a 100 (valores estimados por mim, ajuste)
+  stack: [["C", 90], ["Python", 85], ["C++", 78], ["Qiskit", 80], ["YARA", 82], ["Ghidra", 80], ["Linux", 85], ["Git", 75]],
+  email: "lucas.vieira@mensa.org.br", // não há e-mail público no perfil: troque
+  curriculo: "",
+  musica: "",
+  faixa: "musica.wav",
+  redes: [["GitHub", "https://github.com/lucas-vieiraOFC"], ["Credly", "https://www.credly.com/users/lucas-vieira.2c21d8c8"]],
+  projetos: [
+    { titulo: "quantum-medical-crypto", texto: "Proteção criptográfica quântica para prontuários e imagens médicas: protocolo, modelo de ameaças e implementação de referência, apresentados no Global Health Catalyst Summit em setembro de 2026.", tags: ["Python", "Qiskit", "NumPy"], link: "https://github.com/lucas-vieiraOFC/quantum-medical-crypto", capa: "onda" },
+    { titulo: "yara-detections", texto: "Detecções para famílias de malware que analisei: assinaturas estáticas, IOCs, notas de unpacking e rotinas anotadas. Sem amostras vivas, só artefatos de detecção.", tags: ["YARA", "Python", "Ghidra"], link: "https://github.com/lucas-vieiraOFC/yara-detections", capa: "radar" },
+    { titulo: "Genesis", texto: "Simulação de vida em C++ puro. Sem engine, sem dependências, sem bibliotecas externas: só a biblioteca padrão.", tags: ["C++", "Make"], link: "https://github.com/lucas-vieiraOFC/genesis", capa: "rede" },
+    { titulo: "DogScript", texto: "Minha própria linguagem de programação, escrita em C puro, sem dependências externas.", tags: ["C", "Make"], link: "https://github.com/lucas-vieiraOFC/dogscript", capa: "barras" }
+  ],
+  // versão em inglês: só os textos que mudam. Os projetos seguem a mesma ordem da lista acima.
+  en: {
+    papeis: ["cybersecurity researcher", "malware analyst", "quantum information", "systems programmer in C"],
+    disponivel: "online, researching quantum cryptography",
+    manifesto: "I break systems and build the ones that can't be broken. On one side, malware reverse engineering. On the other, quantum cryptography, where security stops being computational difficulty and becomes physics.",
+    numeros: [["4", "IBM Quantum certifications"], ["6", "public repositories"], ["1", "research talk at GHC Summit 2026"]],
+    servicos: [
+      ["Malware", "Reverse engineering: I pull apart packers, trace injection routines and write the detection that catches the next sample from the same family."],
+      ["Quantum", "Quantum key distribution and ghost imaging applied to protecting medical records and diagnostic images."],
+      ["Systems", "Pure C and C++, no engine and no dependencies: a language of my own and a life simulation."]
+    ],
+    projetos: [
+      { texto: "Quantum-cryptographic protection for patient records and medical imaging: protocol design, threat model and reference implementation, presented at the Global Health Catalyst Summit in September 2026." },
+      { texto: "Detections for malware families I've reverse engineered: static signatures, IOCs, unpacking notes and annotated routines. No live samples, detection artifacts only." },
+      { texto: "A life simulation in pure C++. No engine, no dependencies, no external libraries: just the standard library." },
+      { texto: "My own programming language, written in pure C with no external dependencies." }
+    ]
+  }
+};
+/* ==================================== */
+
+/* ---------- idioma: português por padrão; a escolha fica salva no navegador ---------- */
+const LANG = (() => {
+  let l = null;
+  try { l = new URLSearchParams(location.search).get("lang"); } catch {}
+  try { l = l || localStorage.getItem("lang"); } catch {}
+  return l === "en" ? "en" : "pt";
+})();
+const EN = LANG === "en";
+const tr = (pt, en) => EN ? en : pt;
+if (EN && CONFIG.en) {
+  const { projetos: projEn = [], ...resto } = CONFIG.en;
+  Object.assign(CONFIG, resto);
+  CONFIG.projetos = CONFIG.projetos.map((p, i) => ({ ...p, ...projEn[i] }));
+}
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const toque = matchMedia("(pointer: coarse)").matches;
+const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const estreito = () => innerWidth <= 820;
+const raiz = document.documentElement;
+const slug = t => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const dois = n => String(n).padStart(2, "0");
+const limite = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const host = slug(CONFIG.nome) || "dev", inicio = performance.now();
+const sessao = () => { const s = (performance.now() - inicio) / 1000 | 0; return dois(s / 60 | 0) + ":" + dois(s % 60); };
+const VIS = tr("visitante", "visitor");
+let corAtual = "#3dff8b";
+const animadores = new Set();
+
+/* ---------- idioma: textos fixos do HTML e botão do topo ---------- */
+raiz.lang = EN ? "en" : "pt-BR";
+if (EN) {
+  $$("[data-en]").forEach(e => e.textContent = e.dataset.en);
+  $$("[data-titulo-en]").forEach(s => s.dataset.titulo = s.dataset.tituloEn);
+  $$("[data-cmd-en]").forEach(b => b.dataset.cmd = b.dataset.cmdEn);
+  $(".sub").innerHTML = "type <b>help</b>. There are secret commands.";
+  $("#nav").setAttribute("aria-label", "Sections");
+}
+const langBtn = $("#lang-btn"), langMenu = $("#lang-menu");
+$$("[data-lang]", langMenu).forEach(b => b.classList.toggle("on", b.dataset.lang === LANG));
+function abrirLang(v) { langMenu.hidden = !v; langBtn.setAttribute("aria-expanded", v ? "true" : "false"); }
+function trocarIdioma(l) {
+  abrirLang(false);
+  if (l === LANG) return;
+  try { localStorage.setItem("lang", l); } catch {}
+  // guarda a posição e o som para recarregar no mesmo ponto, sem repetir o boot
+  try { sessionStorage.setItem("volta", JSON.stringify({ y: scrollY, som: tocando })); } catch {}
+  const u = new URL(location.href); u.searchParams.set("lang", l); location.replace(u.href);
+}
+langBtn.addEventListener("click", () => abrirLang(langMenu.hidden));
+langMenu.addEventListener("click", e => { const b = e.target.closest("[data-lang]"); if (b) trocarIdioma(b.dataset.lang); });
+document.addEventListener("click", e => { if (!e.target.closest("#idioma")) abrirLang(false); });
+addEventListener("keydown", e => { if (e.key === "Escape") abrirLang(false); });
+
+/* ---------- papel de parede ---------- */
+document.title = CONFIG.nome + " | " + tr("Portfólio", "Portfolio");
+$$("[data-nome]").forEach(e => e.textContent = CONFIG.nome);
+$("#papel").textContent = CONFIG.papeis[0];
+const nomeEl = $("#nome");
+nomeEl.setAttribute("aria-label", CONFIG.nome);
+nomeEl.innerHTML = CONFIG.nome.split(" ").map(p => `<span class="lin glitch" aria-hidden="true">${[...p].map(c => `<span class="ch">${c}</span>`).join("")}</span>`).join("");
+$$(".ch").forEach(c => {
+  const original = c.textContent;
+  c.addEventListener("pointerenter", () => {
+    if (c._t || calmo) return;
+    let n = 0; c.style.color = "var(--ac)";
+    c._t = setInterval(() => { c.textContent = "#$%&@01<>/"[Math.random() * 10 | 0]; if (++n > 6) { clearInterval(c._t); c._t = null; c.textContent = original; c.style.color = ""; } }, 45);
+  });
+});
+function embaralhar(el, txt) {
+  const sim = "!<>-_\\/[]{}=+*^?#01", tam = Math.max(el.textContent.length, txt.length);
+  let f = 0; clearInterval(el._i);
+  el._i = setInterval(() => {
+    f++; let o = "";
+    for (let i = 0; i < tam; i++) o += i < f / 2 ? (txt[i] || "") : (i < txt.length ? sim[Math.random() * sim.length | 0] : "");
+    el.textContent = o;
+    if (f / 2 >= tam) { clearInterval(el._i); el.textContent = txt; }
+  }, 28);
+}
+let papelI = 0;
+if (!calmo) setInterval(() => { papelI = (papelI + 1) % CONFIG.papeis.length; embaralhar($("#papel"), CONFIG.papeis[papelI]); }, 3200);
+const relogio = new Intl.DateTimeFormat("pt-BR", { timeZone: CONFIG.fuso, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+const marcarHora = () => $("#hora").textContent = relogio.format(new Date());
+marcarHora(); setInterval(marcarHora, 1000);
+let avisoT;
+function aviso(t) { const a = $("#aviso"); a.textContent = "> " + t; a.classList.add("visivel"); clearTimeout(avisoT); avisoT = setTimeout(() => a.classList.remove("visivel"), 3200); }
+
+/* ---------- feeds animados dos projetos ---------- */
+function semente(n) { let s = n * 9301 + 49297; return () => (s = (s * 9301 + 49297) % 233280) / 233280; }
+const TIPOS = ["radar", "onda", "rede", "barras"];
+const TELAS = {
+  radar(x, w, h, t, S) {
+    const cx = w * .5, cy = h * .52, R = Math.min(w, h) * .44;
+    x.lineWidth = 1; x.globalAlpha = .35;
+    for (let i = 1; i <= 4; i++) { x.beginPath(); x.arc(cx, cy, R * i / 4, 0, 6.283); x.stroke(); }
+    x.beginPath(); x.moveTo(cx - R, cy); x.lineTo(cx + R, cy); x.moveTo(cx, cy - R); x.lineTo(cx, cy + R); x.stroke();
+    const a = t * 1.2 % 6.283;
+    for (let i = 0; i < 26; i++) { x.globalAlpha = .3 * (1 - i / 26); x.beginPath(); x.moveTo(cx, cy); x.arc(cx, cy, R, a - i * .03, a - (i + 1) * .03, true); x.closePath(); x.fill(); }
+    S.forEach(b => { let d = (a - b.a) % 6.283; if (d < 0) d += 6.283; x.globalAlpha = Math.max(0, 1 - d / 3.5); x.fillRect(cx + Math.cos(b.a) * R * b.r - 3, cy + Math.sin(b.a) * R * b.r - 3, 6, 6); });
+  },
+  onda(x, w, h, t, S) {
+    x.globalAlpha = .15; x.lineWidth = 1;
+    for (let i = 1; i < 8; i++) { x.beginPath(); x.moveTo(w * i / 8, 0); x.lineTo(w * i / 8, h); x.stroke(); }
+    for (let i = 1; i < 4; i++) { x.beginPath(); x.moveTo(0, h * i / 4); x.lineTo(w, h * i / 4); x.stroke(); }
+    for (let k = 0; k < 3; k++) {
+      x.globalAlpha = 1 - k * .33; x.lineWidth = 2 - k * .5; x.beginPath();
+      for (let i = 0; i <= w; i += 4) {
+        const u = i / w, y = h * .5 + Math.sin(u * (6 + k * 5) + t * (2 + k) + S[k].a) * h * .22 * Math.sin(u * 3.14) * (1 - k * .2) + Math.sin(u * 31 + t * 5) * h * .02;
+        i ? x.lineTo(i, y) : x.moveTo(i, y);
+      }
+      x.stroke();
+    }
+  },
+  rede(x, w, h, t, S) {
+    const P = S.slice(0, 16).map(b => [w * (.08 + .84 * b.v) + Math.sin(t * .6 + b.a) * 10, h * (.1 + .8 * (b.r - .2) / .75) + Math.cos(t * .5 + b.a * 2) * 8]);
+    x.lineWidth = 1;
+    for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
+      const d = Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]);
+      if (d < w * .3) { x.globalAlpha = (1 - d / (w * .3)) * .6; x.beginPath(); x.moveTo(P[i][0], P[i][1]); x.lineTo(P[j][0], P[j][1]); x.stroke(); }
+    }
+    P.forEach((p, i) => { x.globalAlpha = .5 + .5 * Math.sin(t * 2 + i); x.fillRect(p[0] - 3, p[1] - 3, 6, 6); });
+  },
+  barras(x, w, h, t, S) {
+    const n = 22, bw = w / n;
+    for (let i = 0; i < n; i++) {
+      const b = S[i], alt = (.25 + .75 * Math.abs(Math.sin(t * (.8 + b.v * 1.6) + b.a))) * h * .8, seg = Math.floor(alt / 9);
+      for (let j = 0; j < seg; j++) { x.globalAlpha = .25 + .75 * j / seg; x.fillRect(i * bw + 2, h - 8 - j * 9, bw - 4, 6); }
+    }
+  }
+};
+function ajustarCanvas(cv, x, tam) {
+  const w = cv.offsetWidth, h = cv.offsetHeight;
+  if (w !== tam.w || h !== tam.h) { tam.w = w; tam.h = h; const pr = Math.min(devicePixelRatio, 1.5); cv.width = w * pr; cv.height = h * pr; x.setTransform(pr, 0, 0, pr, 0, 0); }
+  return w > 0;
+}
+
+/* ---------- chuva de código e protetor de tela ---------- */
+function chuva(cv) {
+  const x = cv.getContext("2d"), fs = 16, sim = "アカサタナハマヤラワ0123456789<>/{}[]$#";
+  let cols = [], w = 0, h = 0;
+  function medir() { w = cv.width = cv.offsetWidth; h = cv.height = cv.offsetHeight; cols = Array.from({ length: Math.ceil(w / fs) }, () => Math.random() * -40 | 0); }
+  medir(); addEventListener("resize", medir);
+  const id = setInterval(() => {
+    x.fillStyle = "rgba(3,7,5,.1)"; x.fillRect(0, 0, w, h);
+    x.font = fs + "px monospace"; x.fillStyle = corAtual;
+    for (let i = 0; i < cols.length; i++) {
+      x.fillText(sim[Math.random() * sim.length | 0], i * fs, cols[i] * fs);
+      cols[i] = cols[i] * fs > h && Math.random() > .975 ? 0 : cols[i] + 1;
+    }
+  }, 55);
+  return () => { clearInterval(id); removeEventListener("resize", medir); };
+}
+let pararMatrix = null, protetor = false, ociosoT;
+function alternarMatrix() {
+  const cv = $("#chuva");
+  if (pararMatrix) { pararMatrix(); pararMatrix = null; cv.classList.remove("on", "salva"); return false; }
+  cv.classList.add("on"); pararMatrix = chuva(cv); return true;
+}
+function mexeu() {
+  if (protetor) { protetor = false; if (pararMatrix) alternarMatrix(); }
+  clearTimeout(ociosoT);
+  ociosoT = setTimeout(() => {
+    if (pararMatrix || calmo || !document.body.classList.contains("ligado")) return;
+    alternarMatrix(); $("#chuva").classList.add("salva"); protetor = true;
+  }, 45000);
+}
+["pointermove", "pointerdown", "keydown"].forEach(e => addEventListener(e, mexeu, { passive: true }));
+
+/* ---------- temas ---------- */
+const PALETA = ["#3dff8b", "#00e5ff", "#ffb400", "#3f73ff"];
+const TEMAS = { verde: "#3dff8b", ciano: "#00e5ff", ambar: "#ffb400", rosa: "#ff2e88", roxo: "#b388ff", branco: "#e8fff2" };
+const TEMA_EN = { green: "verde", cyan: "ciano", amber: "ambar", pink: "rosa", purple: "roxo", white: "branco", default: "padrao" };
+let gl = null, corAnt = -1;
+function definirPaleta(arr) {
+  if (gl) arr.forEach((c, i) => gl.cores[i].set(c));
+  else { corAtual = arr[0]; raiz.style.setProperty("--ac", arr[0]); }
+  corAnt = -1;
+}
+
+/* ---------- rolagem: a seção na tela escolhe a forma e a cor das partículas ---------- */
+const secs = $$("main > section"), navLinks = $$("#nav a");
+let alvoForma = 0, noContato = false, alfaRolagem = 1;
+function rolou() {
+  const vh = innerHeight, ref = scrollY + vh * .3;
+  let idx = 0; secs.forEach((s, i) => { if (ref >= s.offsetTop) idx = i; });
+  let frac = 0;
+  if (idx < secs.length - 1) { frac = limite((ref - (secs[idx + 1].offsetTop - vh * .7)) / (vh * .7)); frac = frac * frac * (3 - 2 * frac); }
+  alvoForma = idx + frac;
+  navLinks.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + secs[idx].id));
+  noContato = idx === secs.length - 1;
+  const esp = $(".espaco", secs[idx]), k = esp && esp.offsetHeight ? limite((ref - (secs[idx].offsetTop + esp.offsetHeight - vh * .35)) / (vh * .3)) : 0;
+  alfaRolagem = 1 - .62 * k * (1 - frac);
+}
+
+/* ---------- compilação ao vivo: a rolagem empurra a linha que transforma código em site ---------- */
+const esc = t => String(t).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const comps = [];
+let buildOk = false, feixeAtual = null;
+function compilavel(el, nome, aoIniciar) {
+  const real = document.createElement("div"); real.className = "real";
+  while (el.firstChild) real.appendChild(el.firstChild);
+  el.classList.add("comp"); el.appendChild(real);
+  if (calmo) { if (aoIniciar) aoIniciar(); return; }
+  const fonte = document.createElement("pre"); fonte.className = "fonte"; fonte.setAttribute("aria-hidden", "true");
+  const feixe = document.createElement("div"); feixe.className = "feixe"; feixe.setAttribute("aria-hidden", "true");
+  const src = esc(real.innerHTML.replace(/\s+/g, " ").replace(/> </g, ">\n<").trim().slice(0, 4000)).replace(/&lt;(\/?[a-z0-9]+)/g, "&lt;<b>$1</b>");
+  fonte.innerHTML = ("<i>// " + esc(nome) + "</i>\n" + src + "\n").repeat(3);
+  real.style.clipPath = "inset(0 0 100% 0)";
+  el.append(fonte, feixe);
+  comps.push({ el, real, fonte, feixe, nome, y: 0, pronto: false, aoIniciar });
+}
+function compilar() {
+  if (!comps.length || !document.body.classList.contains("ligado")) return;
+  const fim = scrollY + innerHeight >= document.documentElement.scrollHeight - 4;
+  const linhaY = innerHeight * (fim ? 1 : .72);
+  let feito = 0, total = 0;
+  feixeAtual = null;
+  comps.forEach(c => {
+    const h = c.el.offsetHeight; total += h;
+    if (c.pronto) { feito += h; return; }
+    const r = c.el.getBoundingClientRect(), y = limite(linhaY - r.top, 0, h);
+    if (y > c.y) { if (!c.y && c.aoIniciar) c.aoIniciar(); c.y = y; }
+    if (c.y >= h - 1) { c.pronto = true; c.real.style.clipPath = ""; c.fonte.remove(); c.feixe.remove(); feito += h; return; }
+    feito += c.y;
+    c.real.style.clipPath = `inset(0 0 ${h - c.y}px 0)`;
+    c.fonte.style.clipPath = `inset(${c.y}px 0 0 0)`;
+    c.feixe.style.transform = `translateY(${c.y}px)`; c.feixe.style.opacity = c.y > 0 ? 1 : 0;
+    if (c.y > 0 && r.top + c.y > 50 && r.top + c.y < innerHeight) feixeAtual = { x0: r.left, x1: r.right, y: r.top + c.y };
+    c.feixe.dataset.t = `${tr("compilando", "compiling")} ${c.nome} ${Math.round(c.y / h * 100)}%`;
+  });
+  const p = total ? Math.floor(feito / total * 100) : 100, rot = $("#build");
+  if (comps.every(c => c.pronto)) { if (!buildOk) { buildOk = true; rot.textContent = "build ok"; aviso(tr("build concluído: 0 erros, 0 avisos", "build finished: 0 errors, 0 warnings")); } }
+  else rot.textContent = "build " + Math.min(p, 99) + "%";
+}
+addEventListener("scroll", () => { rolou(); mexeu(); }, { passive: true });
+addEventListener("resize", rolou);
+const ir = id => { const s = document.getElementById(id); if (s) s.scrollIntoView({ behavior: calmo ? "auto" : "smooth" }); return !!s; };
+function aoVer(el, fn) {
+  if (!("IntersectionObserver" in window)) return fn();
+  const o = new IntersectionObserver(es => { if (es[0].isIntersecting) { o.disconnect(); fn(); } }, { threshold: .2 });
+  o.observe(el);
+}
+
+/* ---------- terminal ---------- */
+const term = { saida: null, campo: null, hist: [], hi: 0 };
+function linha(txt, cls) {
+  const d = document.createElement("div"); if (cls) d.className = cls; d.textContent = txt;
+  if (term.saida) { term.saida.appendChild(d); term.saida.scrollTop = term.saida.scrollHeight; }
+  return d;
+}
+function linhaLink(txt, url) {
+  const d = document.createElement("div"), a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = txt; d.appendChild(a);
+  if (term.saida) { term.saida.appendChild(d); term.saida.scrollTop = term.saida.scrollHeight; }
+}
+const SECOES = ["inicio", "sobre", "projetos", "stack", "terminal", "contato"];
+// em inglês as seções e os comandos também aceitam nomes em inglês
+const SEC_EN = { home: "inicio", about: "sobre", projects: "projetos", contact: "contato" };
+const secId = n => SEC_EN[n] || n;
+const nomesSec = () => EN ? ["home", "about", "projects", "stack", "terminal", "contact"] : SECOES;
+const PUBLICOS = EN
+  ? ["help", "go", "open", "projects", "contact", "cv", "sound", "theme", "neofetch", "matrix", "hack", "clear", "shutdown"]
+  : ["ajuda", "ir", "abrir", "projetos", "contato", "cv", "som", "tema", "neofetch", "matrix", "hack", "limpar", "desligar"];
+const COMANDOS = {
+  ajuda() {
+    if (EN) { linha("available commands:"); linha("  go <section>  scrolls to " + nomesSec().join(", ") + "\n  projects      project list\n  open <n>      link to project n\n  contact       e-mail and links\n  cv            my résumé\n  sound         toggles the soundtrack\n  theme <color> changes the system color\n  neofetch      system info\n  matrix        code rain\n  hack          try your luck\n  clear         clears the screen\n  shutdown      shuts the system down"); linha("Tab completes, arrow up repeats. There are secret commands."); return; }
+    linha("comandos disponíveis:"); linha("  ir <seção>    rola até " + SECOES.join(", ") + "\n  projetos      lista de projetos\n  abrir <n>     link do projeto n\n  contato       e-mail e redes\n  cv            meu currículo\n  som           liga ou desliga a trilha\n  tema <cor>    muda a cor do sistema\n  neofetch      ficha do sistema\n  matrix        chuva de código\n  hack          tente a sorte\n  limpar        limpa a tela\n  desligar      desliga o sistema"); linha("Tab completa, seta para cima repete. Existem comandos secretos.");
+  },
+  ir(n) { const id = secId(n); if (!n || !SECOES.includes(id) || !ir(id)) linha(tr("seções: ", "sections: ") + nomesSec().join(", ")); },
+  abrir(n) {
+    if (SECOES.includes(secId(n))) return ir(secId(n));
+    const p = CONFIG.projetos[+n - 1];
+    if (!p) return linha(tr("não encontrei isso. Veja 'projetos'.", "couldn't find that. See 'projects'."));
+    linhaLink(p.titulo + ": " + p.link, p.link);
+  },
+  sobre() { ir("sobre"); }, stack() { ir("stack"); },
+  projetos() { CONFIG.projetos.forEach((p, i) => linha(`[${i + 1}] ${p.titulo}: ${p.texto}`)); linha(tr("use 'abrir <n>' para pegar o link", "use 'open <n>' to get the link")); },
+  contato() { linhaLink(CONFIG.email, "mailto:" + CONFIG.email); CONFIG.redes.forEach(([n, u]) => linhaLink(n + ": " + u, u)); },
+  cv() { if (!CONFIG.curriculo) return linha(tr("currículo ainda não publicado. Use 'contato'.", "résumé not published yet. Use 'contact'.")); linhaLink(tr("currículo: ", "résumé: ") + CONFIG.curriculo, CONFIG.curriculo); },
+  som() { const vai = !tocando; alternarSom(); linha(vai ? tr("trilha ligada", "soundtrack on") : tr("trilha desligada", "soundtrack off")); },
+  matrix() { linha(alternarMatrix() ? tr("matrix ativada. Digite de novo para sair.", "matrix on. Type it again to exit.") : tr("matrix desativada.", "matrix off.")); },
+  tema(n) {
+    const k = TEMA_EN[n] || n;
+    if (k === "padrao" || k === "padrão") { definirPaleta(PALETA); return linha(tr("tema padrão restaurado", "default theme restored")); }
+    if (k && TEMAS.hasOwnProperty(k)) { definirPaleta([TEMAS[k], TEMAS[k], TEMAS[k], TEMAS[k]]); return linha(tr("tema " + n + " aplicado", n + " theme applied")); }
+    linha(tr("temas: " + Object.keys(TEMAS).join(", ") + ", padrao", "themes: " + Object.keys(TEMA_EN).join(", ")));
+  },
+  neofetch() {
+    linha(`  ██████████   ${VIS}@${host}\n  ██ >_   ██   -------------------\n  ██      ██   os: PortfólioOS 3.0\n  ██████████   shell: web-terminal\n     ████      render: ${gl ? "WebGL, " + gl.n + tr(" partículas", " particles") : tr("modo seguro", "safe mode")}\n   ████████    ${tr("tela", "screen")}: ${innerWidth}x${innerHeight}\n               ${tr("sessão", "session")}: ${sessao()}`);
+  },
+  hack() {
+    let p = 0; const l = linha(tr("invadindo o mainframe... 0%", "hacking the mainframe... 0%"));
+    const i = setInterval(() => {
+      p = Math.min(100, p + 6 + (Math.random() * 12 | 0)); l.textContent = `${tr("invadindo o mainframe...", "hacking the mainframe...")} ${p}%`;
+      if (p >= 100) { clearInterval(i); linha(tr("Nãoooo fui hackeado );", "Nooooo I got hacked );")); }
+    }, 120);
+  },
+  rm() { linha(tr("rm: apagando o sistema...", "rm: wiping the system...")); if (calmo) return linha(tr("sistema protegido contra gravação.", "system is write-protected.")); document.body.classList.add("pane"); setTimeout(() => { document.body.classList.remove("pane"); linha(tr("sistema restaurado do backup. Ufa.", "system restored from backup. Phew.")); }, 1500); },
+  cafe() { linha(tr("café servido. Produtividade +40%.", "coffee served. Productivity +40%.")); },
+  exit() { ir("inicio"); },
+  desligar() { desligar(); },
+  whoami() { linha(tr("visitante curioso, e de bom gosto", "a curious visitor, with good taste")); },
+  sudo() { linha(tr("permissão negada. Boa tentativa.", "permission denied. Nice try.")); },
+  limpar() { if (term.saida) term.saida.innerHTML = ""; }
+};
+COMANDOS.help = COMANDOS.ajuda; COMANDOS.clear = COMANDOS.limpar; COMANDOS.ls = COMANDOS.projetos; COMANDOS.open = COMANDOS.abrir; COMANDOS.cd = COMANDOS.ir; COMANDOS["café"] = COMANDOS.cafe;
+// apelidos em inglês
+COMANDOS.go = COMANDOS.ir; COMANDOS.projects = COMANDOS.projetos; COMANDOS.contact = COMANDOS.contato; COMANDOS.sound = COMANDOS.som; COMANDOS.theme = COMANDOS.tema; COMANDOS.shutdown = COMANDOS.desligar; COMANDOS.about = COMANDOS.sobre; COMANDOS.coffee = COMANDOS.cafe;
+function rodar(txt) {
+  const t = txt.trim(); if (!t) return;
+  term.hist.push(t); term.hi = term.hist.length;
+  linha("~$ " + t, "cmd");
+  const [c, ...args] = t.toLowerCase().split(/\s+/);
+  if (Object.prototype.hasOwnProperty.call(COMANDOS, c)) COMANDOS[c](...args);
+  else linha(tr(`comando não encontrado: ${c}. Digite 'ajuda'.`, `command not found: ${c}. Type 'help'.`));
+}
+(function montarTerminal() {
+  const c = $("#term-corpo");
+  const chips = EN ? ["help", "neofetch", "hack", "matrix", "theme purple", "theme default", "go contact"] : ["ajuda", "neofetch", "hack", "matrix", "tema roxo", "tema padrao", "ir contato"];
+  c.innerHTML = `<div class="saida" aria-live="polite"></div>
+    <form class="form-cmd"><label for="cmd">~$</label><input id="cmd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${tr("digite ajuda", "type help")}"></form>
+    <div class="chips">${chips.map(k => `<button type="button" data-cmd="${k}">${k}</button>`).join("")}</div>`;
+  term.saida = $(".saida", c); term.campo = $("input", c);
+  $("form", c).addEventListener("submit", e => { e.preventDefault(); rodar(term.campo.value); term.campo.value = ""; });
+  term.campo.addEventListener("keydown", e => {
+    if (e.key === "ArrowUp") { e.preventDefault(); if (term.hi > 0) term.campo.value = term.hist[--term.hi]; }
+    else if (e.key === "ArrowDown") { e.preventDefault(); term.hi = Math.min(term.hist.length, term.hi + 1); term.campo.value = term.hist[term.hi] || ""; }
+    else if (e.key === "Tab") {
+      e.preventDefault();
+      const v = term.campo.value.toLowerCase(); if (!v) return;
+      const ops = PUBLICOS.filter(k => k.startsWith(v));
+      if (ops.length === 1) term.campo.value = ops[0] + (["abrir", "ir", "tema", "open", "go", "theme"].includes(ops[0]) ? " " : "");
+      else if (ops.length > 1) linha(ops.join("  "));
+    }
+  });
+  linha(tr("PortfólioOS 3.0, sessão de visitante em " + host + ".", "PortfólioOS 3.0, visitor session on " + host + "."));
+  linha(tr("digite 'ajuda' ou toque em um comando abaixo.", "type 'help' or tap a command below."));
+  compilavel($("#term-caixa"), "terminal.html");
+})();
+
+/* ---------- sobre ---------- */
+(function montarSobre() {
+  const c = $("#sobre-corpo");
+  const ficha = EN
+    ? `name:     ${CONFIG.nome}\nrole:     ${CONFIG.papeis[0]}\nlocation: ${CONFIG.local}\nstatus:   ${CONFIG.disponivel}`
+    : `nome:    ${CONFIG.nome}\nfunção:  ${CONFIG.papeis[0]}\nlocal:   ${CONFIG.local}\nstatus:  ${CONFIG.disponivel}`;
+  const manifesto = CONFIG.manifesto.split(" ").map(p => { const m = p.match(/^\*(.+)\*$/); return m ? `<em>${m[1]}</em>` : p; }).join(" ");
+  c.innerHTML = `<div class="sobre">${CONFIG.foto ? `<div class="foto" style="background-image:url('${CONFIG.foto}')"></div>` : ""}<div>
+    <pre class="ficha"></pre><p class="manifesto">${manifesto}</p>
+    <ul class="numeros">${CONFIG.numeros.map(([n, t]) => `<li><span class="num">${n}</span>${t}</li>`).join("")}</ul>
+    <ul class="servs">${CONFIG.servicos.map(([t, d]) => `<li><b>./${slug(t)}</b><span>${d}</span></li>`).join("")}</ul></div></div>`;
+  const pre = $(".ficha", c);
+  compilavel(c, tr("sobre.html", "about.html"), () => {
+    if (calmo) return pre.textContent = ficha;
+    let i = 0; const id = setInterval(() => { i += 2; pre.textContent = ficha.slice(0, i); if (i >= ficha.length) clearInterval(id); }, 18);
+  });
+})();
+
+/* ---------- projetos, cada um com seu feed animado ---------- */
+(function montarProjetos() {
+  const ehImg = s => /\.(png|jpe?g|webp|gif|avif|svg)$/i.test(s || "");
+  $("#projs").innerHTML = CONFIG.projetos.map((p, i) => {
+    const img = ehImg(p.capa) ? p.capa : (p.imagem || ""), tipo = TIPOS.includes(p.capa) ? p.capa : TIPOS[i % 4];
+    return `<article class="painel proj"><div class="capa ${img ? "foto" : ""}" ${img ? `style="background-image:url('${img}')"` : ""}>${img ? "" : `<canvas class="tela" data-tipo="${tipo}" data-i="${i}"></canvas><small>feed: ${tipo}</small>`}</div>
+      <div class="proj-info"><h3>${p.titulo}</h3><p>${p.texto}</p><ul class="tags">${p.tags.map(t => `<li>${t}</li>`).join("")}</ul><a class="btn cheio" href="${p.link}" target="_blank" rel="noopener">${tr("abrir projeto", "open project")}</a></div></article>`;
+  }).join("");
+  $$("#projs .proj").forEach((el, i) => compilavel(el, (slug(CONFIG.projetos[i].titulo) || "projeto") + ".html"));
+  $$("#projs .tela").forEach(cv => {
+    const x = cv.getContext("2d"), tam = { w: 0, h: 0 }, i = +cv.dataset.i, tipo = cv.dataset.tipo, r = semente(i + 1);
+    const S = Array.from({ length: 24 }, () => ({ a: r() * 6.283, r: .2 + r() * .75, v: r() }));
+    let vis = true;
+    if ("IntersectionObserver" in window) new IntersectionObserver(es => vis = es[0].isIntersecting).observe(cv);
+    animadores.add(t => {
+      if (!vis || !ajustarCanvas(cv, x, tam)) return;
+      x.clearRect(0, 0, tam.w, tam.h); x.fillStyle = x.strokeStyle = corAtual;
+      TELAS[tipo](x, tam.w, tam.h, calmo ? 1 : t + i * 3, S); x.globalAlpha = 1;
+    });
+  });
+})();
+
+/* ---------- stack estilo htop ---------- */
+(function montarStack() {
+  const pre = $("#htop");
+  const procs = CONFIG.stack.map(([n, v], i) => ({ n, v, pid: 1000 + i * 37 }));
+  const barra = (v, l) => "[<b>" + "█".repeat(Math.round(v / 100 * l)) + "</b>" + "░".repeat(l - Math.round(v / 100 * l)) + "]";
+  function pintar() {
+    const l = estreito() ? 10 : 18, nm = estreito() ? 11 : 14;
+    let o = `<i>${tr("tarefas", "tasks")}:</i> ${procs.length}   <i>${tr("sessão", "session")}:</i> ${sessao()}   <i>${tr("café", "coffee")}:</i> ${barra(60 + Math.random() * 35, 8)}\n\n<i>  PID  ${tr("PROCESSO", "PROCESS").padEnd(nm)}  ${tr("DOMÍNIO", "SKILL").padEnd(l + 2)}       CPU%</i>\n`;
+    procs.forEach(p => {
+      const cpu = limite(p.v + (Math.random() - .5) * 14, 1, 99);
+      o += `${String(p.pid).padStart(5)}  ${p.n.padEnd(nm).slice(0, nm)}  ${barra(p.v, l)} ${String(p.v).padStart(3)}%  ${cpu.toFixed(1).padStart(5)}\n`;
+    });
+    pre.innerHTML = o;
+  }
+  pintar(); if (!calmo) setInterval(pintar, 800);
+  compilavel($("#stack-corpo"), "stack.html");
+})();
+
+/* ---------- contato e player ---------- */
+(function montarContato() {
+  const em = $("#email"); em.href = "mailto:" + CONFIG.email; em.textContent = CONFIG.email;
+  $("#contato-acoes").innerHTML = `<button class="btn cheio" data-copiar>${tr("copiar e-mail", "copy e-mail")}</button>` + CONFIG.redes.map(([n, u]) => `<a class="btn" href="${u}" target="_blank" rel="noopener">${n}</a>`).join("") +
+    (CONFIG.curriculo ? `<a class="btn" href="${CONFIG.curriculo}" target="_blank" rel="noopener">${tr("currículo", "résumé")}</a>` : "");
+  $("#faixa-nome").textContent = CONFIG.faixa || "musica.wav";
+  $("#direitos").textContent = "© " + new Date().getFullYear() + " " + CONFIG.nome;
+  const L = EN
+    ? ["opening secure channel...", "exchanging keys [RSA-4096] ......... OK", "verifying identity: visitor ........ OK", "connection established."]
+    : ["abrindo canal seguro...", "trocando chaves [RSA-4096] ......... OK", "verificando identidade: visitante ... OK", "conexão estabelecida."], pre = $("#contato-log");
+  compilavel($("#contato-caixa"), tr("contato.html", "contact.html"), () => {
+    if (calmo) { pre.textContent = L.join("\n"); $("#canal").hidden = false; return; }
+    let i = 0; const id = setInterval(() => { pre.textContent += L[i++] + "\n"; if (i >= L.length) { clearInterval(id); $("#canal").hidden = false; } }, 320);
+  });
+  compilavel($("#player"), "player.html");
+  const cv = $("#vis"), x = cv.getContext("2d"), tam = { w: 0, h: 0 }, n = 32;
+  animadores.add(t => {
+    if (!noContato || !ajustarCanvas(cv, x, tam)) return;
+    x.clearRect(0, 0, tam.w, tam.h); x.fillStyle = corAtual;
+    const bw = tam.w / n;
+    for (let i = 0; i < n; i++) {
+      const v = tocando && dados ? dados[i] / 255 : .08 + .06 * Math.sin(t * 2 + i * .5);
+      const seg = Math.max(1, Math.floor(v * tam.h * .9 / 8));
+      for (let j = 0; j < seg; j++) { x.globalAlpha = .3 + .7 * j / seg; x.fillRect(i * bw + 2, tam.h - 6 - j * 8, bw - 4, 5); }
+    }
+    x.globalAlpha = 1;
+  });
+})();
+
+/* ---------- desligar, copiar, botões de comando ---------- */
+function desligar() {
+  if (tocando) alternarSom();
+  document.body.classList.add("off");
+  setTimeout(() => $("#desligado").hidden = false, calmo ? 0 : 700);
+}
+$("#ligar").addEventListener("click", () => { $("#desligado").hidden = true; document.body.classList.remove("off"); });
+document.addEventListener("click", async e => {
+  const cmd = e.target.closest("[data-cmd]");
+  if (cmd) return rodar(cmd.dataset.cmd);
+  if (e.target.closest("[data-copiar]")) {
+    alvoWarp = 1; setTimeout(() => alvoWarp = 0, 1300);
+    try { await navigator.clipboard.writeText(CONFIG.email); aviso(tr("e-mail copiado", "e-mail copied")); } catch { aviso(tr("copie: ", "copy: ") + CONFIG.email); }
+  } else if (e.target.closest("[data-som]")) alternarSom();
+});
+
+
+/* ---------- cursor e giroscópio ---------- */
+let mx = innerWidth / 2, my = innerHeight / 2, ax = mx, ay = my, gx = 0, gy = 0, alvoWarp = 0;
+const cursor = $("#cursor"), ponto = $("i", cursor), anel = $("b", cursor);
+addEventListener("pointermove", e => { mx = e.clientX; my = e.clientY; });
+if (!toque) {
+  document.body.classList.add("tem-cursor");
+  document.addEventListener("pointerover", e => cursor.classList.toggle("ativo", !!(e.target.closest && e.target.closest("a,button,input,.barra-jan,.ch"))));
+}
+function ligarGiro() {
+  const D = window.DeviceOrientationEvent;
+  if (!D || !toque || calmo) return;
+  const ouvir = () => addEventListener("deviceorientation", e => { if (e.gamma == null) return; gx = limite(e.gamma / 28, -1, 1); gy = limite((e.beta - 50) / 28, -1, 1); });
+  if (typeof D.requestPermission === "function") D.requestPermission().then(r => { if (r === "granted") ouvir(); }).catch(() => {});
+  else ouvir();
+}
+
+/* ---------- WebGL: as mesmas partículas escrevem o nome e o título de cada seção ---------- */
+const ALT_MUNDO = 2 * 6 * Math.tan(25 * Math.PI / 180);
+(function iniciarGL() {
+  if (!window.THREE) return;
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: $("#gl"), antialias: false, powerPreference: "high-performance" }); } catch { return; }
+  const pr = Math.min(devicePixelRatio, 1.75);
+  renderer.setPixelRatio(pr); renderer.setClearColor(0x030705);
+  const cena = new THREE.Scene(), cam = new THREE.PerspectiveCamera(50, 1, .1, 100); cam.position.z = 6;
+  const N = innerWidth < 820 ? 11000 : 26000;
+  const rnd = new Float32Array(N * 4), poeira = new Float32Array(N * 3);
+  for (let k = 0; k < N; k++) {
+    rnd[k * 4] = Math.random(); rnd[k * 4 + 1] = Math.random(); rnd[k * 4 + 2] = Math.random(); rnd[k * 4 + 3] = Math.random();
+    poeira[k * 3] = (Math.random() - .5) * 15; poeira[k * 3 + 1] = (Math.random() - .5) * 9; poeira[k * 3 + 2] = -5 + Math.random() * 7;
+  }
+  // desenha o texto num canvas e espalha as partículas em cima dos pixels acesos
+  function escrever(linhasTxt, asp, altMax) {
+    const F = 220, c = document.createElement("canvas"), x = c.getContext("2d");
+    const fonte = F + 'px VT323, ui-monospace, Menlo, Consolas, monospace';
+    x.font = fonte;
+    const larg = Math.max(1, ...linhasTxt.map(l => x.measureText(l).width)), lh = F * .78;
+    c.width = Math.ceil(larg) + 20; c.height = Math.ceil(lh * linhasTxt.length) + 30;
+    x.font = fonte; x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "middle";
+    linhasTxt.forEach((l, i) => x.fillText(l, c.width / 2, 15 + lh * (i + .5)));
+    const d = x.getImageData(0, 0, c.width, c.height).data, pts = [];
+    for (let j = 0; j < c.height; j += 3) for (let i = 0; i < c.width; i += 3) if (d[(j * c.width + i) * 4 + 3] > 128) pts.push(i, j);
+    const o = new Float32Array(N * 3), m = pts.length / 2;
+    const s = Math.min(ALT_MUNDO * asp * .86 / c.width, ALT_MUNDO * altMax / c.height);
+    for (let k = 0; k < N; k++) {
+      const i = k * 3;
+      if (k % 6 === 0 || m < 2) { o[i] = poeira[i]; o[i + 1] = poeira[i + 1]; o[i + 2] = poeira[i + 2]; continue; }
+      const r = (Math.random() * m | 0) * 2;
+      o[i] = (pts[r] - c.width / 2 + Math.random() * 3) * s;
+      o[i + 1] = -(pts[r + 1] - c.height / 2 + Math.random() * 3) * s + .25;
+      o[i + 2] = (Math.random() - .5) * .12;
+    }
+    return o;
+  }
+  const aA = new THREE.BufferAttribute(new Float32Array(N * 3), 3), aB = new THREE.BufferAttribute(new Float32Array(N * 3), 3);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", aA); geo.setAttribute("pB", aB);
+  geo.setAttribute("rnd", new THREE.BufferAttribute(rnd, 4));
+  const u = {
+    uTime: { value: 0 }, uMix: { value: 0 }, uCaos: { value: 0 }, uBeat: { value: 0 }, uSize: { value: .03 }, uPx: { value: 500 },
+    uIntro: { value: 0 }, uMouse: { value: new THREE.Vector3(99, 99, 0) }, uCor: { value: new THREE.Color(PALETA[0]) }, uAlfa: { value: .85 },
+    uFeixe: { value: new THREE.Vector3(0, 0, 0) }, uFeixeF: { value: 0 }
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms: u, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+    vertexShader: `
+      attribute vec3 pB; attribute vec4 rnd;
+      uniform float uTime,uMix,uCaos,uBeat,uSize,uPx,uIntro,uFeixeF; uniform vec3 uMouse,uFeixe;
+      varying float vR; varying float vA; varying float vK;
+      void main(){
+        float t=smoothstep(0.,1.,clamp(uMix*1.5-rnd.x*.5,0.,1.));
+        vec3 pos=mix(position,pB,t);
+        pos+=(rnd.yzw-.5)*sin(t*3.14159)*2.6;
+        pos+=(rnd.yzw-.5)*uCaos*3.;
+        pos.xy+=vec2(sin(uTime*(.6+rnd.y)+rnd.z*40.),cos(uTime*(.5+rnd.z)+rnd.w*40.))*.014;
+        pos=mix((rnd.yzw-.5)*vec3(26.,26.,14.),pos,uIntro);
+        vec4 wp=modelMatrix*vec4(pos,1.);
+        // parte das partículas escorre do título até a linha de compilação do bloco que está sendo montado
+        float fase=fract(uTime*(.3+rnd.x*.45)+rnd.y*9.);
+        float kf=step(rnd.z,.5)*uFeixeF*smoothstep(0.,.9,fase);
+        wp.xyz=mix(wp.xyz,vec3(mix(uFeixe.x,uFeixe.y,rnd.w),uFeixe.z+(rnd.y-.5)*.05,0.),kf);
+        vK=kf*(1.-smoothstep(.9,1.,fase));
+        vec2 d=wp.xy-uMouse.xy; float fo=smoothstep(1.1,0.,length(d));
+        wp.xy+=normalize(d+1e-4)*fo*.55; wp.z+=fo*(rnd.x-.5)*1.2;
+        vec4 mv=viewMatrix*wp;
+        gl_Position=projectionMatrix*mv;
+        gl_PointSize=min(uSize*(.5+rnd.w)*(1.+uBeat*1.5)*uPx/max(-mv.z,.2),34.);
+        vR=rnd.x;
+        vA=.5+.5*step(.5,fract(rnd.y*10.+uTime*(.4+rnd.z)));
+      }`,
+    fragmentShader: `
+      uniform vec3 uCor; uniform float uAlfa; varying float vR; varying float vA; varying float vK;
+      void main(){ gl_FragColor=vec4(mix(uCor,vec3(.9,1.,.95),max(vR*vR*.5,vK*.6)),mix(uAlfa,1.,vK)*vA); }`
+  });
+  const pontos = new THREE.Points(geo, mat); pontos.frustumCulled = false; cena.add(pontos);
+
+  gl = { renderer, cena, cam, u, aA, aB, pontos, n: N, formas: [], iAtual: -1, cores: PALETA.map(c => new THREE.Color(c)), v: new THREE.Vector3() };
+  function montarFormas() {
+    const asp = innerWidth / innerHeight, nome = CONFIG.nome.toUpperCase(), palavras = nome.split(/\s+/);
+    gl.formas = secs.map((s, i) => i === 0
+      ? escrever(asp < 1.25 && palavras.length > 1 ? palavras : [nome], asp, .58)
+      : escrever([s.dataset.titulo.toUpperCase()], asp, .4));
+    gl.iAtual = -1;
+  }
+  function tamanho() {
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
+    u.uPx.value = h * pr * .5;
+  }
+  tamanho(); montarFormas();
+  let largGL = innerWidth, redimGL;
+  addEventListener("resize", () => {
+    tamanho();
+    if (innerWidth === largGL) return; // a barra do navegador do celular só muda a altura
+    largGL = innerWidth; clearTimeout(redimGL); redimGL = setTimeout(montarFormas, 150);
+  });
+  if (document.fonts && document.fonts.load) document.fonts.load('220px "VT323"').then(montarFormas).catch(() => {});
+  document.body.classList.add("tem-gl");
+})();
+
+
+/* ---------- música: lo-fi calmo gerado com Web Audio, ou o seu arquivo em CONFIG.musica ---------- */
+const BPM = 78, PASSO = 60 / BPM / 4;
+// Dm9, G13, Cmaj9, Am9
+const ACORDES = [{ b: 38, n: [53, 57, 60, 64] }, { b: 43, n: [53, 57, 59, 64] }, { b: 36, n: [52, 55, 59, 62] }, { b: 45, n: [55, 59, 60, 64] }];
+const MELODIA = [
+  [0, 0, 76, 0, 0, 79, 0, 0, 81, 0, 0, 79, 0, 0, 0, 0],
+  [0, 0, 76, 0, 0, 0, 74, 0, 0, 0, 71, 0, 0, 0, 0, 0],
+  [0, 0, 74, 0, 0, 76, 0, 0, 79, 0, 0, 0, 76, 0, 0, 0],
+  [0, 0, 72, 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 74, 0]
+];
+const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+let ctx, master, padBus, teclas, lead, bateria, analyser, dados, ruidoBuf, audioEl = null, tocando = false, timer = null, passoN = 0, proximo = 0;
+const soando = () => tocando && ctx && ctx.state === "running";
+function iniciarSom() {
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch {} // iPhone no modo silencioso
+  master = ctx.createGain(); master.gain.value = .6;
+  const quente = ctx.createBiquadFilter(); quente.type = "lowpass"; quente.frequency.value = 5200;
+  const comp = ctx.createDynamicsCompressor();
+  analyser = ctx.createAnalyser(); analyser.fftSize = 256; analyser.smoothingTimeConstant = .7;
+  dados = new Uint8Array(analyser.frequencyBinCount);
+  master.connect(quente); quente.connect(comp); comp.connect(analyser); analyser.connect(ctx.destination);
+  padBus = ctx.createBiquadFilter(); padBus.type = "lowpass"; padBus.frequency.value = 900; padBus.connect(master);
+  teclas = ctx.createBiquadFilter(); teclas.type = "lowpass"; teclas.frequency.value = 1700; teclas.connect(master);
+  lead = ctx.createBiquadFilter(); lead.type = "lowpass"; lead.frequency.value = 2600; lead.connect(master);
+  const eco = ctx.createDelay(1); eco.delayTime.value = PASSO * 3;
+  const volta = ctx.createGain(); volta.gain.value = .34;
+  const molhado = ctx.createGain(); molhado.gain.value = .4;
+  lead.connect(eco); teclas.connect(eco); eco.connect(volta); volta.connect(eco); eco.connect(molhado); molhado.connect(master);
+  bateria = ctx.createGain(); bateria.gain.value = .5; bateria.connect(master);
+  ruidoBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+  const canal = ruidoBuf.getChannelData(0);
+  for (let i = 0; i < canal.length; i++) canal[i] = Math.random() * 2 - 1;
+  if (CONFIG.musica) {
+    audioEl = new Audio(CONFIG.musica); audioEl.loop = true;
+    audioEl.addEventListener("error", () => { audioEl = null; if (soando()) ligarSintese(); });
+    try { ctx.createMediaElementSource(audioEl).connect(master); } catch { audioEl = null; }
+  }
+  const nome = $("#faixa-nome"), sub = $("#faixa-sub");
+  if (nome) nome.textContent = CONFIG.faixa || "musica.wav";
+}
+function nota(freq, t, dur, tipo, vol, destino, ataque, soltura, desafina) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = tipo; o.frequency.value = freq; if (desafina) o.detune.value = desafina;
+  g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vol, t + ataque); g.gain.setTargetAtTime(.0001, t + dur, soltura / 3);
+  o.connect(g); g.connect(destino); o.start(t); o.stop(t + dur + soltura * 2);
+}
+function tecla(m, t, vol) {
+  [["triangle", 1, 1], ["sine", 2, .22]].forEach(([tipo, mult, k]) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = tipo; o.frequency.value = hz(m) * mult;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vol * k, t + .012); g.gain.exponentialRampToValueAtTime(.0008, t + 1.9);
+    o.connect(g); g.connect(teclas); o.start(t); o.stop(t + 2);
+  });
+}
+function baixo(m, t, dur) {
+  [["sine", .26], ["triangle", .07]].forEach(([tipo, vol]) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = tipo; o.frequency.value = hz(m);
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + .05);
+  });
+}
+function bumbo(t, vol) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(42, t + .1);
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + .28);
+  o.connect(g); g.connect(bateria); o.start(t); o.stop(t + .3);
+}
+function ruido(t, dur, vol, tipo, freq) {
+  const s = ctx.createBufferSource(); s.buffer = ruidoBuf;
+  const f = ctx.createBiquadFilter(); f.type = tipo; f.frequency.value = freq;
+  const g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  s.connect(f); f.connect(g); g.connect(bateria); s.start(t); s.stop(t + dur + .02);
+}
+function tocarPasso(n, t0) {
+  const compasso = n >> 4, s = n & 15, ac = ACORDES[compasso % 4], t = t0 + (s % 2 ? PASSO * .3 : 0); // contratempo atrasado = balanço
+  if (s === 0) {
+    ac.n.forEach(m => { nota(hz(m), t, PASSO * 14, "sine", .026, padBus, .5, .8, 5); nota(hz(m), t, PASSO * 14, "sine", .026, padBus, .5, .8, -5); });
+    ac.n.forEach((m, i) => tecla(m, t + i * .014, .075));
+  }
+  if (s === 10) ac.n.slice(1).forEach((m, i) => tecla(m, t + i * .012, .04));
+  if (s === 0) baixo(ac.b, t, PASSO * 5); else if (s === 7) baixo(ac.b, t, PASSO * 1.6); else if (s === 10) baixo(ac.b + 7, t, PASSO * 4);
+  if (compasso >= 1) { const m = MELODIA[compasso % 4][s]; if (m) nota(hz(m), t, PASSO * 1.6, "triangle", .05, lead, .01, .35); }
+  if (compasso >= 2) {
+    if (s === 0 || s === 10) bumbo(t, .9); else if (s === 7 && compasso % 2) bumbo(t, .55);
+    if (s === 4 || s === 12) { ruido(t, .14, .2, "bandpass", 1700); nota(190, t, .05, "triangle", .1, bateria, .002, .06); }
+    if (s % 2 === 0) ruido(t, .035, .05, "highpass", 7500); else if (s % 4 === 3) ruido(t, .03, .025, "highpass", 8500);
+  }
+}
+function agendar() {
+  const frente = document.hidden ? 1.6 : .15;
+  while (proximo < ctx.currentTime + frente) { tocarPasso(passoN, proximo); proximo += PASSO; passoN++; }
+}
+function ligarSintese() { proximo = Math.max(proximo, ctx.currentTime + .08); clearInterval(timer); timer = setInterval(agendar, 25); agendar(); }
+function rotulosSom() {
+  const on = soando();
+  document.body.classList.toggle("tocando", on);
+  $("#som").setAttribute("aria-label", on ? tr("Desligar música", "Turn music off") : tr("Ligar música", "Turn music on"));
+  $$("[data-rotulo]").forEach(b => b.textContent = on ? tr("pausar", "pause") : tr("tocar", "play"));
+}
+// A música começa ligada. O navegador só solta o áudio depois do primeiro toque ou tecla,
+// então ela fica armada e dispara nesse primeiro gesto.
+async function alternarSom() {
+  if (!ctx) iniciarSom();
+  if (tocando && ctx.state !== "running") { ctx.resume(); return; }
+  if (tocando) { tocando = false; clearInterval(timer); if (audioEl) audioEl.pause(); rotulosSom(); await ctx.suspend(); return; }
+  tocando = true;
+  await ctx.resume();
+  if (!tocando) return;
+  rotulosSom();
+  if (audioEl) audioEl.play().catch(() => {}); else ligarSintese();
+}
+["pointerup", "touchend", "keydown", "click"].forEach(n => addEventListener(n, e => {
+  if (ctx && tocando && ctx.state !== "running" && !(e.target.closest && e.target.closest("[data-som]"))) ctx.resume();
+}, { passive: true }));
+document.addEventListener("visibilitychange", () => { if (soando() && !audioEl) agendar(); });
+
+
+/* ---------- laço principal ---------- */
+let prog = 0, beat = 0, warp = 0, tAnt = 0, dedo = false;
+addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") { dedo = true; mx = e.clientX; my = e.clientY; } }, { passive: true });
+["pointerup", "pointercancel"].forEach(n => addEventListener(n, e => { if (e.pointerType !== "mouse") dedo = false; }, { passive: true }));
+function laco(t) {
+  const dt = Math.min(.05, (t - tAnt) / 1000); tAnt = t;
+  if (!toque) {
+    ax += (mx - ax) * .2; ay += (my - ay) * .2;
+    ponto.style.transform = `translate3d(${mx}px,${my}px,0)`;
+    anel.style.transform = `translate3d(${ax}px,${ay}px,0)`;
+  }
+  let alvoBeat = 0;
+  if (tocando && analyser) { analyser.getByteFrequencyData(dados); alvoBeat = (dados[0] + dados[1] + dados[2]) / 765; }
+  beat += (alvoBeat - beat) * .3;
+  animadores.forEach(f => f(t / 1000));
+  compilar();
+  prog += (alvoForma - prog) * .08;
+  warp += (alvoWarp - warp) * .08;
+  if (gl && gl.formas.length > 1) {
+    const { u, cam, cores, v, formas } = gl, n = formas.length, i = Math.min(Math.floor(prog), n - 2), f = limite(prog - i);
+    if (i !== gl.iAtual) { gl.iAtual = i; gl.aA.array.set(formas[i]); gl.aB.array.set(formas[i + 1]); gl.aA.needsUpdate = gl.aB.needsUpdate = true; }
+    u.uTime.value = t / 1000; u.uMix.value = f; u.uCaos.value = warp; u.uBeat.value = calmo ? 0 : beat;
+    const c = limite(prog / (n - 1)) * (cores.length - 1), ci = Math.min(Math.floor(c), cores.length - 2);
+    u.uCor.value.copy(cores[ci]).lerp(cores[ci + 1], c - ci);
+    u.uAlfa.value = .85 * alfaRolagem;
+    // no celular o texto de partículas inclina junto com o aparelho
+    if (toque) { gl.pontos.rotation.y += (gx * .7 - gl.pontos.rotation.y) * .1; gl.pontos.rotation.x += (gy * .5 - gl.pontos.rotation.x) * .1; }
+    if (Math.abs(prog - corAnt) > .004) { corAnt = prog; corAtual = "#" + u.uCor.value.getHexString(); raiz.style.setProperty("--ac", corAtual); }
+    const nx = toque ? gx : mx / innerWidth * 2 - 1, ny = toque ? -gy : -(my / innerHeight) * 2 + 1, amp = toque ? .6 : 1;
+    cam.position.x += (nx * .4 * amp - cam.position.x) * .04;
+    cam.position.y += (ny * .26 * amp - cam.position.y) * .04;
+    cam.lookAt(0, 0, 0);
+    if (!toque || dedo) { v.set(mx / innerWidth * 2 - 1, -(my / innerHeight) * 2 + 1, .5).unproject(cam).sub(cam.position).normalize(); u.uMouse.value.copy(cam.position).addScaledVector(v, -cam.position.z / v.z); }
+    else u.uMouse.value.set(99, 99, 0);
+    if (u.uIntro.value < 1 && document.body.classList.contains("ligado")) u.uIntro.value = Math.min(1, u.uIntro.value + dt * (calmo ? 9 : .45) * (1.05 - u.uIntro.value) * 3);
+    gl.renderer.render(gl.cena, gl.cam);
+  }
+  requestAnimationFrame(laco);
+}
+
+
+/* ---------- boot: sobe como um sistema de verdade e entra sozinho ---------- */
+const boot = $("#boot"), log = $("#log"), barraAscii = $("#barra-ascii");
+const pararChuvaBoot = calmo ? () => {} : chuva($("#chuva-boot"));
+const dorme = ms => new Promise(r => setTimeout(r, ms));
+// troca de idioma: a página recarrega e volta direto para onde estava, sem repetir o boot
+let retorno = null;
+try { retorno = JSON.parse(sessionStorage.getItem("volta")); sessionStorage.removeItem("volta"); } catch {}
+let entrou = false;
+function entrar() {
+  if (entrou) return; entrou = true;
+  const rapido = calmo || !!retorno;
+  if (!retorno || retorno.som) alternarSom(); // precisa rodar dentro do próprio toque/tecla, senão Safari e Firefox não liberam o áudio
+  if (!(window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission)) ligarGiro();
+  pararChuvaBoot();
+  boot.classList.add("desliga");
+  setTimeout(() => boot.classList.add("fim"), rapido ? 0 : 320);
+  setTimeout(() => {
+    boot.remove(); document.body.classList.add("ligado");
+    if (retorno) scrollTo({ top: +retorno.y || 0, behavior: "instant" });
+    mexeu(); rolou(); rotulosSom();
+    if (retorno) prog = alvoForma;
+  }, rapido ? 0 : 600);
+}
+async function bootar() {
+  if (calmo || retorno) return entrar();
+  const p = h => log.insertAdjacentHTML("beforeend", h + "\n");
+  const ok = t => `[  <b>OK</b>  ] ${t}`;
+  let tk = 0;
+  const k = t => `<i>[${(tk += .004 + Math.random() * .09).toFixed(6).padStart(11)}]</i> ${t}`;
+  const nuc = navigator.hardwareConcurrency || 4, mem = (navigator.deviceMemory || 8) * 1024;
+  const nome = esc(CONFIG.nome), ano = new Date().getFullYear(), usuario = "/home/" + host;
+  const pr = Math.round(devicePixelRatio * 100) / 100;
+
+  p(`PortfólioBIOS v3.0  (C) ${ano} ${nome}`);
+  p(`CPU: ${VIS}-x86_64, ${nuc} ${tr("núcleos lógicos", "logical cores")}`);
+  const m = document.createElement("span"); log.append(tr("Memória: ", "Memory: "), m, "\n");
+  for (let i = 1; i <= 12 && !entrou; i++) { m.textContent = Math.round(mem * i / 12) + "M" + (i === 12 ? " OK" : ""); await dorme(38); }
+  const etapas = [
+    [`${tr("Tela", "Display")}: ${screen.width}x${screen.height} @ ${pr}x`, 60],
+    [tr(`Entrada: ${toque ? "toque" : "mouse e teclado"} detectado`, `Input: ${toque ? "touch" : "mouse and keyboard"} detected`), 60],
+    [tr(`Idioma: ${esc(navigator.language || "pt-BR")}, fuso ${esc(CONFIG.fuso)}`, `Language: ${esc(navigator.language || "en")}, timezone ${esc(CONFIG.fuso)}`), 60],
+    [tr("Disco de boot: /dev/portfolio", "Boot disk: /dev/portfolio"), 160],
+    ["", 60],
+    [tr("Carregando kernel ............ <b>OK</b>", "Loading kernel ............... <b>OK</b>"), 120],
+    [tr("Descompactando initramfs ..... <b>OK</b>", "Unpacking initramfs .......... <b>OK</b>"), 200],
+    ["", 40],
+    [k(`Linux version 6.9.0-portfolio (${esc(host)}@build) #1 SMP`), 30],
+    [k("Command line: BOOT_IMAGE=/vmlinuz root=/dev/portfolio ro quiet charme=1"), 30],
+    [k(tr(`smpboot: ${nuc} processadores ativados`, `smpboot: ${nuc} processors brought up`)), 30],
+    [k(tr(`Memory: ${mem}M disponível`, `Memory: ${mem}M available`)), 30],
+    [k(tr("clocksource: trocando para tsc", "clocksource: switched to tsc")), 25],
+    [k(tr("pci 0000:00:02.0: placa de vídeo encontrada", "pci 0000:00:02.0: video device found")), 25],
+    [k(gl ? tr(`webgl: renderizador ok, ${gl.n} partículas alocadas`, `webgl: renderer ok, ${gl.n} particles allocated`) : tr("webgl: indisponível, usando modo seguro", "webgl: unavailable, using safe mode")), 45],
+    [k(tr("webaudio: sintetizador pronto, 78 bpm", "webaudio: synthesizer ready, 78 bpm")), 25],
+    [k(tr("crt0: scanlines ligadas, fósforo P1 verde", "crt0: scanlines on, green P1 phosphor")), 25],
+    [k(tr("input: cursor personalizado registrado", "input: custom cursor registered")), 20],
+    [k(tr("EXT4-fs (portfolio): montado em modo leitura", "EXT4-fs (portfolio): mounted read-only")), 40],
+    [k(tr("random: crng iniciado", "random: crng init done")), 20],
+    [k(tr("systemd[1]: PortfólioOS 3.0 subindo", "systemd[1]: PortfólioOS 3.0 starting up")), 140],
+    ["", 30],
+    [ok(tr("Alcançado o alvo Sistema de Arquivos Local", "Reached target Local File Systems")), 45],
+    [ok(tr(`Montado ${usuario}/sobre`, `Mounted ${usuario}/about`)), 40],
+    [ok(tr(`Montado ${usuario}/projetos (${CONFIG.projetos.length} itens)`, `Mounted ${usuario}/projects (${CONFIG.projetos.length} items)`)), 40],
+    ...CONFIG.projetos.map(pj => [`         ${tr("decifrando", "decrypting")} ${esc(slug(pj.titulo) || "projeto")}.html [AES-256]`, 55]),
+    [ok(tr("Iniciado Gerenciador de Módulos", "Started Module Manager")), 45],
+    ...CONFIG.stack.map(([n, v]) => [`         modprobe ${esc(slug(n))}`.padEnd(34, ".") + ` ${v}% <b>ok</b>`, 42]),
+    [ok(tr("Iniciado Serviço de Partículas", "Started Particle Service")), 50],
+    [ok(tr("Iniciado Serviço de Áudio", "Started Audio Service")), 50],
+    [ok(tr("Iniciado Compilador ao Vivo", "Started Live Compiler")), 50],
+    [ok(tr("Iniciado Terminal de Visitante em tty1", "Started Visitor Terminal on tty1")), 50],
+    [ok(tr(`Canal seguro aberto com ${esc(CONFIG.email)}`, `Secure channel opened with ${esc(CONFIG.email)}`)), 50],
+    [ok(tr("Iniciado Protetor de Tela Matrix", "Started Matrix Screensaver")), 40],
+    [ok(tr("Alcançado o alvo Interface Gráfica", "Reached target Graphical Interface")), 120],
+    ["", 30],
+    [`PortfólioOS 3.0 ${esc(host)} tty1`, 60],
+    [`${esc(host)} login: ${VIS} (${tr("automático", "automatic")})`, 160]
+  ];
+  for (const [h, d] of etapas) { if (entrou) return; p(h); await dorme(d * (.6 + Math.random() * .8)); }
+  for (let pct = 0; pct < 100 && !entrou;) {
+    pct = Math.min(100, pct + 4 + (Math.random() * 9 | 0));
+    const cheias = Math.round(pct / 5);
+    barraAscii.textContent = tr("iniciando sessão [", "starting session [") + "#".repeat(cheias) + ".".repeat(20 - cheias) + "] " + pct + "%";
+    await dorme(40);
+  }
+  if (entrou) return;
+  $("#acesso").hidden = false;
+  // o navegador só libera áudio depois de um toque ou tecla: se já liberou, entra direto;
+  // se não, o boot para no clássico "pressione qualquer tecla" e esse gesto liga o som
+  if (!ctx) iniciarSom();
+  try { await Promise.race([ctx.resume(), dorme(300)]); } catch {}
+  const t0 = ctx.currentTime; await dorme(160);
+  if (entrou) return;
+  // só confia se o relógio do áudio estiver andando de verdade
+  if (ctx.state === "running" && ctx.currentTime > t0) { await dorme(600); return entrar(); }
+  const tecla = $("#tecla");
+  tecla.firstChild.textContent = toque ? tr("toque na tela para iniciar", "tap the screen to start") : tr("pressione qualquer tecla para iniciar", "press any key to start");
+  tecla.hidden = false; $(".pular").hidden = true;
+}
+["pointerdown", "keydown"].forEach(n => boot.addEventListener(n, entrar));
+addEventListener("keydown", () => { if (!entrou) entrar(); }, { once: true });
+// no iPhone o giroscópio pede permissão e só pode pedir dentro de um toque
+addEventListener("touchend", () => { if (window.DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) ligarGiro(); }, { once: true });
+bootar();
+requestAnimationFrame(laco);
+
+</script>
+</body>
+</html>
